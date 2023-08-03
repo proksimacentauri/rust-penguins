@@ -1,26 +1,22 @@
 use std::sync::Arc;
 
-use axum::{Router, routing::{get, post}, extract::State};
-use crate::AppState;
+use axum::{
+    routing::{get, post, put, delete},
+    Router,
+};
 
-async fn hello_world() -> &'static str {
-    "Hello, world!"
-}
-
-async fn version(State(data): State<Arc<AppState>>) -> String {
-    let result: Result<String, sqlx::Error> = sqlx::query_scalar("SELECT version()")
-    .fetch_one(&data.db)
-    .await;
-
-    match result {
-        Ok(version) => version,
-        Err(e) => format!("Error: {:?}", e),        
-    }
-}
+use crate::{
+    handlers::penguins::{ handle_hello, handle_get_penguins, handle_get_penguin_by_id, handle_post_penguin, handle_update_penguin, handle_delete_penguin_by_id },
+    AppState,
+};
 
 pub fn routes(app_state: Arc<AppState>) -> Router {
     Router::new()
-        .route("/version", get(version))
-        .route("/", get(hello_world))
-         .with_state(app_state)
+        .route("/hello", get(handle_hello))
+        .route("/api/penguins", get(handle_get_penguins))
+        .route("/api/penguins", post(handle_post_penguin))
+        .route("/api/penguins/:id", put(handle_update_penguin))
+        .route("/api/penguins/:id", get(handle_get_penguin_by_id))
+        .route("/api/penguins/:id", delete(handle_delete_penguin_by_id))
+       .with_state(app_state)
 }
