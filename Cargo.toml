@@ -16,5 +16,5 @@ chrono = "0.4.26"
 async-trait = "0.1"
 serde_json = "1.0.104"
 shuttle-static-folder = "0.21.0"
-tower-http = { version = "0.4.3", features = ["fs"] }
+tower-http = { version = "0.4.3", features = ["fs", "cors"] }
 axum-extra = { version = "0.4.2", features = ["spa"] }
